@@ -167,6 +167,7 @@
       <h3>Jetzt eintragen</h3>
       <p class="form-sub">Kostenlos. Unverbindlich. Wir melden uns zum Start.</p>
       <form onsubmit="handleSubmit(event,'koch')">
+        <input type="text" id="koch-website" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
         <div class="col-left">
           <label for="koch-name">Name</label>
           <input type="text" id="koch-name" placeholder="Vor- und Nachname" required>
@@ -225,6 +226,7 @@
       <h3>Jetzt eintragen</h3>
       <p class="form-sub">Pilotphase kostenlos. Unverbindlich. Wir melden uns zum Start.</p>
       <form onsubmit="handleSubmit(event,'betrieb')">
+        <input type="text" id="betrieb-website" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
         <div class="col-left">
           <label for="betrieb-name">Ansprechpartner</label>
           <input type="text" id="betrieb-name" placeholder="Vor- und Nachname" required>
@@ -277,11 +279,15 @@ function showSection(type, navEl) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function handleSubmit(e, type) {
-  e.preventDefault();
-  var wrap = document.getElementById('form-' + type);
-  var success = document.getElementById('success-' + type);
-  e.target.style.display = 'none';
+var ANMELDUNG_ENDPOINT = "https://ala-minute.vercel.app/api/landing/anmeldung";
+
+function getVal(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : "";
+}
+
+function showSuccess(wrap, success, formEl) {
+  formEl.style.display = 'none';
   var sub = wrap.querySelector('.form-sub');
   var note = wrap.querySelector('.form-note');
   var title = wrap.querySelector('h3');
@@ -289,6 +295,48 @@ function handleSubmit(e, type) {
   if (note) note.style.display = 'none';
   if (title) title.style.display = 'none';
   success.style.display = 'block';
+}
+
+function handleSubmit(e, type) {
+  e.preventDefault();
+  var wrap = document.getElementById('form-' + type);
+  var success = document.getElementById('success-' + type);
+  var btn = e.target.querySelector('button[type="submit"]');
+  var originalBtnText = btn ? btn.textContent : "";
+  if (btn) { btn.disabled = true; btn.textContent = "Sende..."; }
+
+  var payload = {
+    type: type,
+    name: getVal(type + '-name'),
+    email: getVal(type + '-email'),
+    phone: getVal(type + '-phone'),
+    website: getVal(type + '-website'), // Honeypot, sollte leer sein
+  };
+  if (type === 'koch') {
+    payload.erfahrung = getVal('koch-erfahrung');
+  } else {
+    payload.firma = getVal('betrieb-firma');
+    payload.groesse = getVal('betrieb-groesse');
+  }
+
+  fetch(ANMELDUNG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  .then(function(r) { return r.json().then(function(j) { return { ok: r.ok, j: j }; }); })
+  .then(function(res) {
+    if (res.ok) {
+      showSuccess(wrap, success, e.target);
+    } else {
+      if (btn) { btn.disabled = false; btn.textContent = originalBtnText; }
+      alert(res.j.error || "Etwas ist schiefgelaufen. Bitte versuche es erneut.");
+    }
+  })
+  .catch(function() {
+    if (btn) { btn.disabled = false; btn.textContent = originalBtnText; }
+    alert("Verbindungsfehler. Bitte versuche es erneut.");
+  });
 }
 </script>
 </body>
