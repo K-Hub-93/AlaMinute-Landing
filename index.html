@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A la Minute – Kurzfristig. Qualifiziert. Verlässlich.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #1a1a1a; --dark: #333; --mid: #888; --light: #bbb;
+    --line: #e0e0e0; --bg: #f7f7f5; --white: #fff;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); color: var(--black); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 860px; margin: 0 auto; padding: 0 2.5rem; }
+  .label { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); display: block; margin-bottom: 1.5rem; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(247,247,245,.93); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+    padding: 1rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo { font-family: var(--serif); font-weight: 900; font-size: 1.05rem; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-right { display: flex; gap: 0.75rem; }
+  .nav-right.hidden { display: none; }
+  nav a.nav-btn { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--black); text-decoration: none; padding: 0.5rem 1.2rem; border: 1.5px solid var(--black); transition: all 0.2s; }
+  nav a.nav-btn:hover, nav a.nav-btn.active { background: var(--black); color: var(--white); }
+  .section nav .nav-right { display: none; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 2.5rem 5rem;
+    max-width: 860px; margin: 0 auto;
+  }
+  .hero h1 { font-size: clamp(2.8rem, 6vw, 4.8rem); margin-bottom: 1.5rem; }
+  .hero p { color: var(--dark); font-size: 1.05rem; max-width: 540px; line-height: 1.7; margin-bottom: 3.5rem; }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 0.9rem 2.4rem; font-size: 0.75rem; font-weight: 600; font-family: var(--sans); letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; border: 1.5px solid var(--black); transition: all 0.2s; cursor: pointer; }
+  .btn-dark { background: var(--black); color: var(--white); }
+  .btn-dark:hover { background: var(--dark); border-color: var(--dark); }
+  .btn-light { background: transparent; color: var(--black); }
+  .btn-light:hover { background: var(--black); color: var(--white); }
+
+  /* ── SECTIONS ── */
+  .section { padding: 7rem 0; display: none; }
+  .section.visible { display: block; }
+  .section-white { background: var(--white); }
+
+  .section h2 { font-size: clamp(2rem, 4.5vw, 3.2rem); margin-bottom: 0.5rem; }
+  .section .subtitle { font-style: italic; color: var(--mid); font-size: 1rem; margin-bottom: 3rem; max-width: 540px; }
+
+  /* ── FEATURES (single column with dividers) ── */
+  .features { margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0; }
+  .feature { padding: 1.2rem 0; border-bottom: 1px solid var(--line); }
+  .feature:first-child { border-top: 1px solid var(--line); }
+  .feature-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
+  .feature-desc { font-size: 0.9rem; color: var(--mid); }
+
+  /* ── FORM ── */
+  .form-wrap { background: var(--white); border: 1px solid var(--line); border-radius: 4px; padding: 2rem; max-width: 100%; margin-top: 1.5rem; }
+  .form-wrap h3 { font-family: var(--serif); font-weight: 700; font-size: 1.2rem; color: var(--black); margin-bottom: 0.25rem; }
+  .form-wrap .form-sub { font-size: 0.8rem; color: var(--mid); margin-bottom: 1.5rem; }
+  
+  /* Form layout: two columns */
+  .form-wrap form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem 2rem; }
+  .form-wrap form label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); display: block; margin-bottom: 0.3rem; }
+  .form-wrap form input, .form-wrap form select { width: 100%; padding: 0.65rem 0.85rem; font-size: 0.9rem; font-family: var(--sans); background: var(--bg); border: 1px solid var(--line); color: var(--black); margin-bottom: 0.9rem; transition: border 0.2s; border-radius: 2px; }
+  .form-wrap form input::placeholder { color: var(--light); }
+  .form-wrap form input:focus, .form-wrap form select:focus { outline: none; border-color: var(--black); }
+  .form-wrap form select option { color: var(--black); background: var(--white); }
+  
+  /* Left column: name + email stacked */
+  .form-wrap form .col-left { grid-column: 1; display: flex; flex-direction: column; }
+  .form-wrap form .col-left > * { margin-bottom: 0; }
+  .form-wrap form .col-left label + input { margin-bottom: 1.1rem; }
+  
+  /* Right column: phone + experience stacked */
+  .form-wrap form .col-right { grid-column: 2; display: flex; flex-direction: column; }
+  .form-wrap form .col-right > * { margin-bottom: 0; }
+  .form-wrap form .col-right label + input, .form-wrap form .col-right label + select { margin-bottom: 1.1rem; }
+  
+  /* Button spans full width */
+  .form-wrap form button { grid-column: 1 / -1; width: 100%; padding: 0.85rem; font-size: 0.75rem; font-weight: 600; font-family: var(--sans); letter-spacing: 0.1em; text-transform: uppercase; border: none; background: var(--black); color: var(--white); cursor: pointer; transition: all 0.2s; border-radius: 2px; margin-top: 0.5rem; }
+  .form-wrap form button:hover { background: var(--dark); }
+  
+  .form-note { font-size: 0.72rem; color: var(--light); margin-top: 0.8rem; text-align: center; }
+  .form-success { display: none; text-align: center; padding: 2rem 0; color: var(--black); }
+  .form-success .check { font-size: 1.8rem; margin-bottom: 0.4rem; }
+  .form-success h4 { font-family: var(--serif); font-size: 1rem; margin-bottom: 0.3rem; }
+  .form-success p { font-size: 0.8rem; color: var(--mid); }
+
+  /* ── FOOTER ── */
+  footer { text-align: center; padding: 3.5rem 2.5rem; border-top: 1px solid var(--line); }
+  .footer-logo { font-family: var(--serif); font-weight: 900; font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .footer-tagline { font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--light); margin-bottom: 1.5rem; }
+  footer p { font-size: 0.85rem; color: var(--mid); margin-top: 0.3rem; }
+  footer a { color: var(--black); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-small { font-size: 0.75rem; color: var(--light); margin-top: 1rem; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 2.4rem; }
+    .nav-right { gap: 0.5rem; }
+    nav a.nav-btn { padding: 0.45rem 0.9rem; font-size: 0.65rem; }
+    .form-wrap form { grid-template-columns: 1fr; }
+    .form-wrap form .col-left, .form-wrap form .col-right { grid-column: 1; }
+    .form-wrap form button { grid-column: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">A la Minute</div>
+  <div class="nav-right hidden" id="nav-right">
+    <a href="#" class="nav-btn" onclick="showSection('koch', this); return false;">Ich bin Koch</a>
+    <a href="#" class="nav-btn" onclick="showSection('betrieb', this); return false;">Ich bin Betrieb</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <section class="hero">
+    <span class="label">Bald verfügbar in Hamburg</span>
+    <h1>Dein Koch fällt aus.<br>Dein Abend nicht.</h1>
+    <p>A la Minute vernetzt selbständige Köche mit Gastronomiebetrieben – für kurzfristige Ausfälle, planbare Events und alles dazwischen. Schnell, sicher und fair.</p>
+    <div class="hero-ctas">
+      <a href="#" class="btn btn-light" onclick="showSection('koch', null); return false;">Ich bin Koch</a>
+      <a href="#" class="btn btn-light" onclick="showSection('betrieb', null); return false;">Ich bin Betrieb</a>
+    </div>
+  </section>
+</div>
+
+<!-- KOCH SECTION -->
+<div id="section-koch" class="section section-white">
+  <div class="container">
+    <span class="label">Fur Koche</span>
+    <h2>Modernes Arbeiten.<br>In der Gastronomie.</h2>
+    <p class="subtitle">„Dein Können. Deine Regeln."</p>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-title">Selbstbestimmt</div>
+        <div class="feature-desc">Wann und für wen du willst</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">Automatisiert</div>
+        <div class="feature-desc">Keine Akquise, keine Bürokratie</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">Fair bezahlt</div>
+        <div class="feature-desc">Dein Honorar, ohne Abzüge</div>
+      </div>
+    </div>
+    <div class="form-wrap" id="form-koch">
+      <h3>Jetzt eintragen</h3>
+      <p class="form-sub">Kostenlos. Unverbindlich. Wir melden uns zum Start.</p>
+      <form onsubmit="handleSubmit(event,'koch')">
+        <div class="col-left">
+          <label for="koch-name">Name</label>
+          <input type="text" id="koch-name" placeholder="Vor- und Nachname" required>
+          <label for="koch-email">E-Mail</label>
+          <input type="email" id="koch-email" placeholder="deine@email.de" required>
+        </div>
+        <div class="col-right">
+          <label for="koch-phone">Telefon (optional)</label>
+          <input type="tel" id="koch-phone" placeholder="+49 ...">
+          <label for="koch-erfahrung">Erfahrung als Koch (Jahre)</label>
+          <select id="koch-erfahrung">
+            <option value="">Bitte wählen</option>
+            <option value="1-3">1–3</option>
+            <option value="3-5">3–5</option>
+            <option value="5-10">5–10</option>
+            <option value="10+">10+</option>
+          </select>
+        </div>
+        <button type="submit">Eintragen</button>
+      </form>
+      <p class="form-note">Kein Account, kein Abo – nur eine Info, wenn wir starten.</p>
+      <div class="form-success" id="success-koch">
+        <div class="check">✓</div>
+        <h4>Du bist dabei.</h4>
+        <p>Wir melden uns, sobald A la Minute in Hamburg startet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BETRIEB SECTION -->
+<div id="section-betrieb" class="section section-white">
+  <div class="container">
+    <span class="label">Fur Gastronomiebetriebe</span>
+    <h2>Kontrolle zurück.</h2>
+    <p class="subtitle">„Egal was passiert – du hast einen Plan B."</p>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-title">Ersatz in Minuten</div>
+        <div class="feature-desc">SOS-Buchung bei Ausfall</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">Geprüfte Köche</div>
+        <div class="feature-desc">Pool an verifizierten Köchen</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">Buchungsschutz</div>
+        <div class="feature-desc">Ersatz oder Freibuchung bei No-Show</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">Flexible Personalkosten</div>
+        <div class="feature-desc">Selbständige Köche ergänzen dein Stammpersonal bei Auftragsspitzen</div>
+      </div>
+    </div>
+    <div class="form-wrap" id="form-betrieb">
+      <h3>Jetzt eintragen</h3>
+      <p class="form-sub">Pilotphase kostenlos. Unverbindlich. Wir melden uns zum Start.</p>
+      <form onsubmit="handleSubmit(event,'betrieb')">
+        <div class="col-left">
+          <label for="betrieb-name">Ansprechpartner</label>
+          <input type="text" id="betrieb-name" placeholder="Vor- und Nachname" required>
+          <label for="betrieb-email">E-Mail</label>
+          <input type="email" id="betrieb-email" placeholder="info@betrieb.de" required>
+          <label for="betrieb-firma">Betrieb</label>
+          <input type="text" id="betrieb-firma" placeholder="Restaurant / Hotel / Catering" required>
+        </div>
+        <div class="col-right">
+          <label for="betrieb-groesse">Betriebsgröße (Mitarbeiter)</label>
+          <select id="betrieb-groesse">
+            <option value="">Bitte wählen</option>
+            <option value="1-5">1–5</option>
+            <option value="5-20">5–20</option>
+            <option value="20-50">20–50</option>
+            <option value="50+">50+</option>
+          </select>
+          <label for="betrieb-phone">Telefon (optional)</label>
+          <input type="tel" id="betrieb-phone" placeholder="+49 ...">
+        </div>
+        <button type="submit">Eintragen</button>
+      </form>
+      <p class="form-note">Kein Account, kein Abo – nur eine Info, wenn wir starten.</p>
+      <div class="form-success" id="success-betrieb">
+        <div class="check">✓</div>
+        <h4>Sie sind dabei.</h4>
+        <p>Wir melden uns, sobald die Pilotphase in Hamburg startet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">A la Minute</div>
+  <div class="footer-tagline">Kurzfristig. Qualifiziert. Verlässlich.</div>
+  <p>Fragen? Meld dich direkt:</p>
+  <p><strong>[Dein Name]</strong>, Gründer · <a href="tel:+49XXXXXXXXXXX">[Deine Nummer]</a> · <a href="mailto:hello@alaminute.de">hello@alaminute.de</a></p>
+  <p class="footer-small">Falls ich nicht direkt rangehe, rufe ich zurück.</p>
+  <p class="footer-small" style="margin-top:1.5rem">Hamburg · 2026</p>
+</footer>
+
+<script>
+function showSection(type, navEl) {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('section-koch').classList.remove('visible');
+  document.getElementById('section-betrieb').classList.remove('visible');
+  document.getElementById('section-' + type).classList.add('visible');
+  document.getElementById('nav-right').classList.add('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function handleSubmit(e, type) {
+  e.preventDefault();
+  var wrap = document.getElementById('form-' + type);
+  var success = document.getElementById('success-' + type);
+  e.target.style.display = 'none';
+  var sub = wrap.querySelector('.form-sub');
+  var note = wrap.querySelector('.form-note');
+  var title = wrap.querySelector('h3');
+  if (sub) sub.style.display = 'none';
+  if (note) note.style.display = 'none';
+  if (title) title.style.display = 'none';
+  success.style.display = 'block';
+}
+</script>
+</body>
+</html>
